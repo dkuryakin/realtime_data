@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "services"
+version = "0.1.0"
+description = ""
+authors = ["David Kuryakin <dkuryakin@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.75.0"
+aiokafka = "^0.7.2"
+aiochclient = {extras = ["aiohttp"], version = "^2.1.0"}
+uvicorn = "^0.17.5"
+websockets = "^10.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
