@@ -30,7 +30,7 @@ class RealtimeDataGenerator:
             price += random.random() - 0.5
             if price < 0:
                 price = 0
-            await asyncio.sleep(random.random())
+            await asyncio.sleep(random.random() * 2)
 
     async def _generate_symbol_price_events(self, symbol: str):
         decimal_places = random.randint(1, 6)
