@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import './style.scss';
-import {useParams, useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import RealtimePlot from "../../components/RealtimePlot";
 import Select from 'react-select';
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const {symbol} = useParams();
+    const [symbol_, setSymbol_] = useState(symbol || null)
     const [symbols, setSymbols] = useState(null)
     const [symbolsError, setSymbolsError] = useState(false)
 
@@ -17,6 +18,10 @@ export default function Dashboard() {
             setSymbolsError(true)
         })
     }, []);
+
+    useEffect(() => {
+        setSymbol_(symbol)
+    }, [symbol]);
 
     if (symbolsError) {
         return (
@@ -37,14 +42,13 @@ export default function Dashboard() {
     return (
 
         <div className="dashboard">
-            <h1>Realtime plot</h1>
+            <h1>Realtime plot: {symbol_ ? symbol_ : 'choose symbol'}</h1>
             <Select
-                key={symbol}
-                value={symbol || null}
+                value={symbols.filter(option => option.value === symbol_)}
                 onChange={symbol => navigate(`/${symbol.value}`)}
                 options={symbols}
             />
-            {symbol ? <RealtimePlot symbol={symbol} height={350}/> : ''}
+            {symbol_ ? <RealtimePlot symbol={symbol_} height={640}/> : ''}
         </div>
     )
 }

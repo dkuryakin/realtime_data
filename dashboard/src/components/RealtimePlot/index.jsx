@@ -31,10 +31,6 @@ export default function RealtimePlot({symbol, height}) {
         stroke: {
             curve: 'smooth'
         },
-        title: {
-            text: `Realtime plot: ${symbol}`,
-            align: 'left'
-        },
         markers: {
             size: 0
         },

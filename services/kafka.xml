@@ -1,5 +1,0 @@
-<clickhouse>
-    <kafka>
-        <stream_flush_interval_ms>500</stream_flush_interval_ms>
-    </kafka>
-</clickhouse>

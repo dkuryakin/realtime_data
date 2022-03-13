@@ -1,11 +1,10 @@
 import asyncio
-import json
 
 from aiochclient import ChClient
 from aiohttp import ClientSession
 from fastapi import FastAPI, WebSocket
 
-from common.typedef import PriceEvent
+from common.typedef import PriceEventList
 from common.utils import symbols
 from .handler import PriceEventHandler
 from .receiver import RealtimeDataReceiver
@@ -40,16 +39,16 @@ async def price_events(websocket: WebSocket, symbol: str):
             ORDER BY timestamp DESC
             LIMIT 1000
         """, params={'symbol': symbol})
-        msg = [
-            json.loads(PriceEvent(**price_event).json())
-            for price_event in reversed(price_event_list)
-        ]
-        await websocket.send_text(json.dumps(msg))
-    while True:
-        price_event: PriceEvent = await app.state.price_event_handler.get_price(symbol)
-        if price_event is not None:
-            await websocket.send_text(json.dumps([json.loads(price_event.json())]))
-        await asyncio.sleep(settings.price_delay)
+        price_event_list.reverse()
+        price_event_list = PriceEventList(__root__=price_event_list)
+        await websocket.send_text(price_event_list.json())
+    handler = app.state.price_event_handler
+    async with handler.subscribe(symbol) as channel:
+        while True:
+            price_event = await channel.recv()
+            price_event_list = PriceEventList(__root__=[price_event])
+            await websocket.send_text(price_event_list.json())
+            await asyncio.sleep(settings.price_delay)
 
 
 @app.get("/symbols")
